@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { router } from './router';
 
-mongoose.connect(process.env.MONGODB_ACCESS_KEY)
+mongoose.connect('mongodb+srv://jlefilho:Pio100590@waiterapp.jlwqumi.mongodb.net/test')
     .then(()=> {
         const app = express();
 
