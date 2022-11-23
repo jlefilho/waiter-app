@@ -10,7 +10,7 @@ export const OrdersBoard = styled.div`
     flex-direction: column;
     align-items: center;
 
-    header {
+    > header {
         padding: 0.5rem;
         font-size: 0.875rem;
         display: flex;

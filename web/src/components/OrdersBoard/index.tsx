@@ -8,7 +8,7 @@ const orders: OrderProps[] = [
     {
         '_id': 'id123',
         'table': '123',
-        'status': 'DONE',
+        'status': 'IN_PRODUCTION',
         'products': [
             {
                 'product': {
