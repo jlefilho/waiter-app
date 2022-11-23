@@ -43,6 +43,7 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: GeneralSans, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
   body {
     background: #fafafa;
