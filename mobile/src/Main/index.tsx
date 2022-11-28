@@ -14,10 +14,17 @@ export function Main() {
         setSelectedTable(table);
     }
 
+    function handleCancelOrder() {
+        setSelectedTable('');
+    }
+
     return (
         <>
             <MainContainer>
-                <Header />
+                <Header
+                    selectedTable={selectedTable}
+                    onCancelOrder={handleCancelOrder}
+                />
 
                 <CategoriesContainer>
                     <Categories />
