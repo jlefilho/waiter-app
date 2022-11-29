@@ -6,23 +6,14 @@ import { Button } from '../components/Button';
 import { TableModal } from '../components/TableModal';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../types/CartItem';
+import { Product } from '../types/product';
 
 import { CategoriesContainer, FooterContainer, Footer, MainContainer, MenuContainer } from './styles';
-import { products } from '../mocks/products';
 
 export function Main() {
     const [isTableModalVisible, setIsTableModalVisible] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
-    const [cartItems, setCartItems] = useState<CartItem[]>([
-        {
-            quantity: 1,
-            product: products[0]
-        },
-        {
-            quantity: 2,
-            product: products[1]
-        }
-    ]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
     function handleSaveTable(table: string) {
         setSelectedTable(table);
@@ -30,6 +21,56 @@ export function Main() {
 
     function handleCancelOrder() {
         setSelectedTable('');
+        setCartItems([]);
+    }
+
+    function handleAddToCart(product: Product) {
+        if (!selectedTable) {
+            setIsTableModalVisible(true);
+        }
+
+        setCartItems((prevState) => {
+            const itemIndex = prevState.findIndex(cartItem => cartItem.product._id === product._id);
+
+            if (itemIndex < 0) {
+                return [...prevState, {
+                    quantity: 1,
+                    product
+                }];
+            }
+
+            const cartItems = [...prevState];
+            const alreadyExistingItem = cartItems[itemIndex];
+
+            cartItems[itemIndex] = {
+                ...alreadyExistingItem,
+                quantity: alreadyExistingItem.quantity + 1
+            };
+
+            return cartItems;
+        });
+    }
+
+    function handleDecrementCartItem(product: Product) {
+        setCartItems((prevState) => {
+            const itemIndex = prevState.findIndex(cartItem => cartItem.product._id === product._id);
+
+            const alreadyExistingItem = prevState[itemIndex];
+            const cartItems = [...prevState];
+
+            if (alreadyExistingItem.quantity === 1) {
+                cartItems.splice(itemIndex, 1);
+
+                return cartItems;
+            }
+
+            cartItems[itemIndex] = {
+                ...alreadyExistingItem,
+                quantity: alreadyExistingItem.quantity - 1
+            };
+
+            return cartItems;
+        });
     }
 
     return (
@@ -45,7 +86,7 @@ export function Main() {
                 </CategoriesContainer>
 
                 <MenuContainer>
-                    <Menu />
+                    <Menu onAddToCart={handleAddToCart} />
                 </MenuContainer>
 
             </MainContainer>
@@ -58,7 +99,11 @@ export function Main() {
                     )}
 
                     {selectedTable && (
-                        <Cart cartItems={cartItems}/>
+                        <Cart
+                            cartItems={cartItems}
+                            onAddtoCart={handleAddToCart}
+                            onDecrement={handleDecrementCartItem}
+                        />
                     )}
 
                 </FooterContainer>
