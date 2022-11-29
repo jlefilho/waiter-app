@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { CartItem } from '../../types/CartItem';
 import { Product } from '../../types/product';
@@ -5,6 +6,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { Button } from '../Button';
 import { MinusCircle } from '../Icons/MinusCircle';
 import { PlusCircle } from '../Icons/PlusCircle';
+import { OrderConfirmedModal } from '../OrderConfirmedModal';
 import { Text } from '../Text';
 import {
     CartItemContainer,
@@ -21,12 +23,24 @@ interface CartProps {
     cartItems: CartItem[]
     onAddtoCart: (product: Product) => void;
     onDecrement: (product: Product) => void;
+    onConfirmedOrder: () => void
 }
 
-export function Cart({ cartItems, onAddtoCart, onDecrement }: CartProps) {
+export function Cart({ cartItems, onAddtoCart, onDecrement, onConfirmedOrder }: CartProps) {
+    const [isOrderConfirmedModalVisible, setIsOrderConfirmedModalVisible] = useState(false);
+
     const orderTotalPrice = cartItems.reduce((acc, cartItem) => {
         return acc + cartItem.quantity * cartItem.product.price;
     }, 0);
+
+    function handleConfirmOrder() {
+        setIsOrderConfirmedModalVisible(true);
+    }
+
+    function handleCloseOrderConfirmedModal() {
+        setIsOrderConfirmedModalVisible(false);
+        onConfirmedOrder();
+    }
 
     return (
         <>
@@ -104,13 +118,18 @@ export function Cart({ cartItems, onAddtoCart, onDecrement }: CartProps) {
                 </TotalContainer>
 
                 <Button
-                    onPress={() => alert('Confirmar pedido')}
+                    onPress={handleConfirmOrder}
                     disabled={cartItems.length === 0}
                 >
                     Confirmar pedido
                 </Button>
 
             </CartSummary>
+
+            <OrderConfirmedModal
+                visible={isOrderConfirmedModalVisible}
+                onClose={handleCloseOrderConfirmedModal}
+            />
         </>
     );
 }
