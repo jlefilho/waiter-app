@@ -8,12 +8,21 @@ import { Cart } from '../components/Cart';
 import { CartItem } from '../types/CartItem';
 import { Product } from '../types/product';
 
-import { CategoriesContainer, FooterContainer, Footer, MainContainer, MenuContainer } from './styles';
+import {
+    CategoriesContainer,
+    FooterContainer,
+    Footer,
+    MainContainer,
+    MenuContainer,
+    CenteredContainer
+} from './styles';
+import { ActivityIndicator } from 'react-native';
 
 export function Main() {
     const [isTableModalVisible, setIsTableModalVisible] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     function handleSaveTable(table: string) {
         setSelectedTable(table);
@@ -81,19 +90,30 @@ export function Main() {
                     onCancelOrder={handleResetOrder}
                 />
 
-                <CategoriesContainer>
-                    <Categories />
-                </CategoriesContainer>
+                {!isLoading ? (
+                    <>
+                        <CategoriesContainer>
+                            <Categories />
+                        </CategoriesContainer>
 
-                <MenuContainer>
-                    <Menu onAddToCart={handleAddToCart} />
-                </MenuContainer>
+                        <MenuContainer>
+                            <Menu onAddToCart={handleAddToCart} />
+                        </MenuContainer>
+                    </>
+                ) : (
+                    <CenteredContainer>
+                        <ActivityIndicator size='large' color='#D73035'/>
+                    </CenteredContainer>
+                )}
 
             </MainContainer>
             <Footer>
                 <FooterContainer>
                     {!selectedTable && (
-                        <Button onPress={() => setIsTableModalVisible(true)}>
+                        <Button
+                            onPress={() => setIsTableModalVisible(true)}
+                            disabled={isLoading}
+                        >
                             Novo pedido
                         </Button>
                     )}
