@@ -4,7 +4,12 @@ import path from 'node:path';
 
 import { router } from './router';
 
-mongoose.connect('mongodb+srv://jlefilho:Pio100590@waiterapp.jlwqumi.mongodb.net/test')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
+const accessKey = process.env.MONGODB_ACCESS_KEY;
+
+mongoose.connect(`${accessKey}`)
     .then(()=> {
         const app = express();
 
