@@ -186,6 +186,7 @@ export function Main() {
                             onAddtoCart={handleAddToCart}
                             onDecrement={handleDecrementCartItem}
                             onConfirmedOrder={handleResetOrder}
+                            selectedTable={selectedTable}
                         />
                     )}
 
