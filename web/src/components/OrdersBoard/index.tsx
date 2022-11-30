@@ -1,54 +1,39 @@
+import { useEffect, useState } from 'react';
+import { OrderProps } from '../../types/Order';
+import { api } from '../../utils/api';
 import { OrderCard } from '../OrderCard';
 import { OrdersContainer } from './styles';
 
-import { OrderProps } from '../../types/Order';
-
-
-const orders: OrderProps[] = [
-    {
-        '_id': 'id123',
-        'table': '123',
-        'status': 'IN_PRODUCTION',
-        'products': [
-            {
-                'product': {
-                    'name': 'Pizza quatro queijos',
-                    'imagePath': '1668629173307-quatro-queijos.png',
-                    'price': 40
-                },
-                'quantity': 3,
-                '_id': 'idpizza'
-            },
-            {
-                'product': {
-                    'name': 'Coca-cola',
-                    'imagePath': '1668630397430-coca-cola.png',
-                    'price': 7
-                },
-                'quantity': 1,
-                '_id': 'idcoca'
-            },
-        ]
-    }
-];
-
 export function OrdersBoard() {
+    const [orders, setOrders] = useState<OrderProps[]>([]);
+
+    useEffect(() => {
+        api.get('/orders')
+            .then(({ data }) => {
+                setOrders(data);
+            });
+    }, []);
+
+    const waitingOrders = orders.filter((order) => order.status === 'WAITING');
+    const inProductionOrders = orders.filter((order) => order.status === 'IN_PRODUCTION');
+    const doneOrders = orders.filter((order) => order.status === 'DONE');
+
     return (
         <OrdersContainer>
             <OrderCard
                 icon="⏰"
                 title="Fila de espera"
-                orders={orders}
+                orders={waitingOrders}
             />
             <OrderCard
                 icon="👩‍🍳"
                 title="Em preparação"
-                orders={[]}
+                orders={inProductionOrders}
             />
             <OrderCard
                 icon="✅"
                 title="Pronto!"
-                orders={[]}
+                orders={doneOrders}
             />
 
         </OrdersContainer>
