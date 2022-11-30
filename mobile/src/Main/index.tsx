@@ -1,5 +1,7 @@
 import { ActivityIndicator } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import { Header } from '../components/Header';
 import { Menu } from '../components/Menu';
 import { Categories } from '../components/Categories';
@@ -7,10 +9,9 @@ import { Button } from '../components/Button';
 import { TableModal } from '../components/TableModal';
 import { Cart } from '../components/Cart';
 import { Empty } from '../components/Icons/Empty';
+
 import { CartItem } from '../types/CartItem';
 import { Product } from '../types/product';
-
-import { products as mockProducts } from '../mocks/products';
 
 import {
     CategoriesContainer,
@@ -21,13 +22,27 @@ import {
     CenteredContainer
 } from './styles';
 import { Text } from '../components/Text';
+import { Category } from '../types/category';
 
 export function Main() {
     const [isTableModalVisible, setIsTableModalVisible] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [products, setProducts] = useState<Product[]>(mockProducts);
+    const [isLoading, setIsLoading] = useState(true);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+
+    useEffect(() => {
+        Promise.all([
+            axios.get('http://192.168.0.10:3001/categories'),
+            axios.get('http://192.168.0.10:3001/products')
+        ]).then(([categoriesResponse, productsResponse]) => {
+            setCategories(categoriesResponse.data);
+            setProducts(productsResponse.data);
+            setIsLoading(false);
+        });
+
+    }, []);
 
     function handleSaveTable(table: string) {
         setSelectedTable(table);
@@ -98,7 +113,7 @@ export function Main() {
                 {!isLoading ? (
                     <>
                         <CategoriesContainer>
-                            <Categories />
+                            <Categories categories={categories}/>
                         </CategoriesContainer>
 
                         {products.length > 0 ? (
