@@ -4,7 +4,6 @@ import path from 'node:path';
 
 import { router } from './router';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 const accessKey = process.env.MONGODB_ACCESS_KEY;
