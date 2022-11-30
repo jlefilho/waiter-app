@@ -1,6 +1,6 @@
 import { ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { api } from '../utils/api';
 
 import { Header } from '../components/Header';
 import { Menu } from '../components/Menu';
@@ -9,9 +9,11 @@ import { Button } from '../components/Button';
 import { TableModal } from '../components/TableModal';
 import { Cart } from '../components/Cart';
 import { Empty } from '../components/Icons/Empty';
+import { Text } from '../components/Text';
 
 import { CartItem } from '../types/CartItem';
 import { Product } from '../types/product';
+import { Category } from '../types/category';
 
 import {
     CategoriesContainer,
@@ -21,8 +23,6 @@ import {
     MenuContainer,
     CenteredContainer
 } from './styles';
-import { Text } from '../components/Text';
-import { Category } from '../types/category';
 
 export function Main() {
     const [isTableModalVisible, setIsTableModalVisible] = useState(false);
@@ -34,8 +34,8 @@ export function Main() {
 
     useEffect(() => {
         Promise.all([
-            axios.get('http://192.168.0.10:3001/categories'),
-            axios.get('http://192.168.0.10:3001/products')
+            api.get('/categories'),
+            api.get('/products')
         ]).then(([categoriesResponse, productsResponse]) => {
             setCategories(categoriesResponse.data);
             setProducts(productsResponse.data);
@@ -43,6 +43,15 @@ export function Main() {
         });
 
     }, []);
+
+    async function handleSelectCategory(categoryId: string) {
+        const route = !categoryId
+            ? '/products'
+            : `/categories/${categoryId}/products`;
+
+        const { data } = await api.get(route);
+        setProducts(data);
+    }
 
     function handleSaveTable(table: string) {
         setSelectedTable(table);
@@ -113,7 +122,10 @@ export function Main() {
                 {!isLoading ? (
                     <>
                         <CategoriesContainer>
-                            <Categories categories={categories}/>
+                            <Categories
+                                categories={categories}
+                                onSelectCategory={handleSelectCategory}
+                            />
                         </CategoriesContainer>
 
                         {products.length > 0 ? (
