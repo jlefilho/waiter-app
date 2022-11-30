@@ -31,6 +31,7 @@ export function Main() {
     const [isLoading, setIsLoading] = useState(true);
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [isProductLoading, setIsProductLoading] = useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -49,8 +50,12 @@ export function Main() {
             ? '/products'
             : `/categories/${categoryId}/products`;
 
+        setIsProductLoading(true);
+
         const { data } = await api.get(route);
+
         setProducts(data);
+        setIsProductLoading(false);
     }
 
     function handleSaveTable(table: string) {
@@ -128,25 +133,34 @@ export function Main() {
                             />
                         </CategoriesContainer>
 
-                        {products.length > 0 ? (
-                            <MenuContainer>
-                                <Menu
-                                    onAddToCart={handleAddToCart}
-                                    products={products}
-                                />
-                            </MenuContainer>
-                        ) : (
+                        {isProductLoading ? (
                             <CenteredContainer>
-                                <Empty />
-
-                                <Text
-                                    color='#666'
-                                    style={{ marginTop: 24 }}
-                                >
-                                    Nenhum produto foi encontrado!
-                                </Text>
+                                <ActivityIndicator size='large' color='#D73035'/>
                             </CenteredContainer>
+                        ) : (
+                            <>
+                                {products.length > 0 ? (
+                                    <MenuContainer>
+                                        <Menu
+                                            onAddToCart={handleAddToCart}
+                                            products={products}
+                                        />
+                                    </MenuContainer>
+                                ) : (
+                                    <CenteredContainer>
+                                        <Empty />
+
+                                        <Text
+                                            color='#666'
+                                            style={{ marginTop: 24 }}
+                                        >
+                                            Nenhum produto foi encontrado!
+                                        </Text>
+                                    </CenteredContainer>
+                                )}
+                            </>
                         )}
+
                     </>
                 ) : (
                     <CenteredContainer>
