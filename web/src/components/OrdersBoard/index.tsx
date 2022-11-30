@@ -12,7 +12,7 @@ export function OrdersBoard() {
             .then(({ data }) => {
                 setOrders(data);
             });
-    }, []);
+    }, [orders]);
 
     const waitingOrders = orders.filter((order) => order.status === 'WAITING');
     const inProductionOrders = orders.filter((order) => order.status === 'IN_PRODUCTION');

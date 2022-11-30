@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { OrderProps } from '../../types/Order';
+import { api } from '../../utils/api';
 import { OrderModal } from '../OrderModal';
 import { OrdersBoard, OrderDetailsContainer } from './styles';
 
@@ -12,6 +13,7 @@ interface OrderCardProps {
 export function OrderCard({ icon, title, orders }: OrderCardProps) {
     const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<null | OrderProps>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     function handleOpenOrderModal(order: OrderProps) {
         setIsOrderModalOpen(true);
@@ -23,18 +25,29 @@ export function OrderCard({ icon, title, orders }: OrderCardProps) {
         setSelectedOrder(null);
     }
 
+    async function handleCancelOrder() {
+        setIsLoading(true);
+
+        await api.delete(`orders/${selectedOrder?._id}`);
+
+        setIsLoading(false);
+        setIsOrderModalOpen(false);
+    }
+
     return (
         <OrdersBoard>
             <OrderModal
                 visible={isOrderModalOpen}
                 order={selectedOrder}
                 onClose={handleCloseOrderModal}
+                onCancelOrder={handleCancelOrder}
+                isLoading={isLoading}
             />
 
             <header>
                 <span>{icon}</span>
                 <strong>{title}</strong>
-                <span>(1)</span>
+                <span>({orders.length})</span>
             </header>
 
             <OrderDetailsContainer>

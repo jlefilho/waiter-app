@@ -124,6 +124,11 @@ export const OrderActions = styled.footer`
 
     margin-top: 2rem;
 
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
     .next-stage {
         background-color: #333333;
         border-radius: 48px;
