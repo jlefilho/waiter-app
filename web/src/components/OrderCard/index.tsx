@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { OrderProps } from '../../types/Order';
+import { toast } from 'react-toastify';
 import { api } from '../../utils/api';
+import { OrderProps } from '../../types/Order';
 import { OrderModal } from '../OrderModal';
 import { OrdersBoard, OrderDetailsContainer } from './styles';
 
@@ -30,6 +31,7 @@ export function OrderCard({ icon, title, orders }: OrderCardProps) {
 
         await api.delete(`orders/${selectedOrder?._id}`);
 
+        toast.success(`O pedido da mesa ${selectedOrder?.table} foi cancelado`);
         setIsLoading(false);
         setIsOrderModalOpen(false);
     }
