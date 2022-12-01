@@ -26,12 +26,33 @@ export function OrderCard({ icon, title, orders }: OrderCardProps) {
         setSelectedOrder(null);
     }
 
+    async function handleChangeOrderStatus() {
+        setIsLoading(true);
+
+        const newOrderStatus = selectedOrder?.status === 'WAITING'
+            ? 'IN_PRODUCTION'
+            : 'DONE';
+
+        const toastMessage = selectedOrder?.status === 'WAITING'
+            ? `O pedido da mesa ${selectedOrder?.table} foi mandado para preparação!`
+            : `O pedido da mesa ${selectedOrder?.table} foi finalizado!`;
+
+        await api.patch(`orders/${selectedOrder?._id}`, { status: newOrderStatus });
+        toast.success(toastMessage);
+        setIsLoading(false);
+        setIsOrderModalOpen(false);
+    }
+
     async function handleCancelOrder() {
         setIsLoading(true);
 
+        const toastMessage = selectedOrder?.status === 'DONE'
+            ? `O pedido da mesa ${selectedOrder?.table} foi removido!`
+            : `O pedido da mesa ${selectedOrder?.table} foi cancelado!`;
+
         await api.delete(`orders/${selectedOrder?._id}`);
 
-        toast.success(`O pedido da mesa ${selectedOrder?.table} foi cancelado`);
+        toast.success(toastMessage);
         setIsLoading(false);
         setIsOrderModalOpen(false);
     }
@@ -44,6 +65,7 @@ export function OrderCard({ icon, title, orders }: OrderCardProps) {
                 onClose={handleCloseOrderModal}
                 onCancelOrder={handleCancelOrder}
                 isLoading={isLoading}
+                onChangeOrderStatus={handleChangeOrderStatus}
             />
 
             <header>

@@ -9,10 +9,11 @@ interface OrderModalProps {
     order: OrderProps | null;
     onClose: () => void;
     onCancelOrder: () => Promise<void>;
+    onChangeOrderStatus: () => Promise<void>;
     isLoading: boolean
 }
 
-export function OrderModal({ visible, order, onClose, onCancelOrder, isLoading }:OrderModalProps) {
+export function OrderModal({ visible, order, onClose, onCancelOrder, onChangeOrderStatus, isLoading }:OrderModalProps) {
     useEffect(() => {
         function handleKeydown(event: KeyboardEvent) {
             if (event.key === 'Escape') {
@@ -92,14 +93,27 @@ export function OrderModal({ visible, order, onClose, onCancelOrder, isLoading }
                 </OrderDetailsContainer>
 
                 <OrderActions>
-                    <button
-                        type='button'
-                        className='next-stage'
-                        disabled={isLoading}
-                    >
-                        <span>👩‍🍳</span>
-                        <span>Iniciar produção</span>
-                    </button>
+                    {order.status !== 'DONE' && (
+                        <button
+                            type='button'
+                            className='next-stage'
+                            disabled={isLoading}
+                            onClick={onChangeOrderStatus}
+                        >
+                            {order.status === 'WAITING' ? (
+                                <>
+                                    <span>👩‍🍳</span>
+                                    <span>Iniciar produção</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span>✅</span>
+                                    <span>Finalizar pedido</span>
+                                </>
+
+                            )}
+                        </button>
+                    )}
 
                     <button
                         type='button'
@@ -107,7 +121,9 @@ export function OrderModal({ visible, order, onClose, onCancelOrder, isLoading }
                         onClick={onCancelOrder}
                         disabled={isLoading}
                     >
-                        <span>Cancelar pedido</span>
+                        {order.status === 'DONE'
+                            ? <span>Remover pedido</span>
+                            : <span>Cancelar pedido</span>}
                     </button>
                 </OrderActions>
             </ModalBody>
