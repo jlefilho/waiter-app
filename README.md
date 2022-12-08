@@ -2,45 +2,45 @@
 
 <img src="./images/cover.png" /> <br/> <br/>
 
-## Funcionalidades da aplicação
-# Web
+# Funcionalidades da aplicação
+## Web
 - Monitorar pedidos em tempo real
 - Alterar estado de produção de pedidos
 - Remover pedidos
 
-# Mobile
+## Mobile
 - Inspecionar produtos
 - Adicionar/remover produtos no carrinho
 - Realizar pedidos
 
-## Tecnologias utilizadas
-# Web
+# Tecnologias utilizadas
+## Web
 - React
 - TypeScript
 - Styled Components
 - Axios
 - Vite
 
-# Mobile
+## Mobile
 - React
 - TypeScript
 - Expo
 - Styled Components
 - Axios
 
-# API
+## API
 - TypeScript
 - Node
 - Express
 - MongoDB
 - Mongoose
 
-## Web
+# Web
 <img src="./images/web1.jpg">
 <img src="./images/web2.jpg">
 <img src="./images/web3.jpg">
 
-## Mobile
+# Mobile
 <p align="center">
 <img src="./images/0.png" height=300>
 <img src="./images/1.png" height=300>
